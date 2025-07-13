@@ -23,8 +23,8 @@ def fill_missing_values_median(df):
     try:
         for column in df.columns:
             if df[column].isna().any():
-                median = df[column].median()
-                df[column].fillna(median, inplace=True)
+                mean = df[column].mean()
+                df[column].fillna(mean, inplace=True)
         return df
     except Exception as e:
         raise RuntimeError(f"Error while filling missing values: {e}")
