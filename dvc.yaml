@@ -1,0 +1,33 @@
+stages:
+  data_collection:
+    cmd: python src\water_potability_prediction_project\data_collection.py
+    deps:
+    - src\water_potability_prediction_project\data_collection.py
+    params:
+    - data_collection.test_size
+    outs:
+    - data/raw
+  data_preprocessing:
+    cmd: python src\water_potability_prediction_project\data_preprocessing.py
+    deps:
+    - data/raw
+    - src\water_potability_prediction_project\data_preprocessing.py
+    outs:
+    - data/preprocessed
+  model_building:
+    cmd: python src\water_potability_prediction_project\model_building.py
+    deps:
+    - data/preprocessed
+    - src\water_potability_prediction_project\model_building.py
+    params:
+    - model_building.n_estimators
+    - model_building.max_depth
+    outs:
+    - model.pkl
+  evaluate_model:
+    cmd: python src\water_potability_prediction_project\evaluate_model.py
+    deps:
+    - model.pkl
+    - src\water_potability_prediction_project\evaluate_model.py
+    metrics:
+    - metrics.json

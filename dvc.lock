@@ -1,0 +1,73 @@
+schema: '2.0'
+stages:
+  data_collection:
+    cmd: python src\water_potability_prediction_project\data_collection.py
+    deps:
+    - path: src\water_potability_prediction_project\data_collection.py
+      hash: md5
+      md5: 1eb76e62f6c9e5c51e6a8e0a9bc04b29
+      size: 1927
+    params:
+      params.yaml:
+        data_collection.test_size: 0.2
+    outs:
+    - path: data/raw
+      hash: md5
+      md5: c0c2d65c14a603e91e029fda3c344a5c.dir
+      size: 522262
+      nfiles: 2
+  data_preprocessing:
+    cmd: python src\water_potability_prediction_project\data_preprocessing.py
+    deps:
+    - path: data/raw
+      hash: md5
+      md5: c0c2d65c14a603e91e029fda3c344a5c.dir
+      size: 522262
+      nfiles: 2
+    - path: src\water_potability_prediction_project\data_preprocessing.py
+      hash: md5
+      md5: a3f6af83c881278e3baa2e34f6bd13de
+      size: 2519
+    outs:
+    - path: data/preprocessed
+      hash: md5
+      md5: 09d7d1468d5c1e6739769af7e3154438.dir
+      size: 546137
+      nfiles: 2
+  model_building:
+    cmd: python src\water_potability_prediction_project\model_building.py
+    deps:
+    - path: data/preprocessed
+      hash: md5
+      md5: 09d7d1468d5c1e6739769af7e3154438.dir
+      size: 546137
+      nfiles: 2
+    - path: src\water_potability_prediction_project\model_building.py
+      hash: md5
+      md5: ecfd3fb173b5de7f15e7aa1b4196e28f
+      size: 2184
+    params:
+      params.yaml:
+        model_building.max_depth: 5
+        model_building.n_estimators: 150
+    outs:
+    - path: model.pkl
+      hash: md5
+      md5: d245f25e56b1b755ea296690ff6adbaa
+      size: 590974
+  evaluate_model:
+    cmd: python src\water_potability_prediction_project\evaluate_model.py
+    deps:
+    - path: model.pkl
+      hash: md5
+      md5: d245f25e56b1b755ea296690ff6adbaa
+      size: 590974
+    - path: src\water_potability_prediction_project\evaluate_model.py
+      hash: md5
+      md5: e55a6bc3bb7ae6c2959e1ab9b8b19b40
+      size: 2769
+    outs:
+    - path: metrics.json
+      hash: md5
+      md5: 8cb3513eba22f8fd4fdc0b5bdd7ddd8e
+      size: 151
