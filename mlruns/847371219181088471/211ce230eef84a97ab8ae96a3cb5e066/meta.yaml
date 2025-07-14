@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/847371219181088471/211ce230eef84a97ab8ae96a3cb5e066/artifacts
+end_time: 1752520829563
+entry_point_name: ''
+experiment_id: '847371219181088471'
+lifecycle_stage: active
+run_id: 211ce230eef84a97ab8ae96a3cb5e066
+run_name: rebellious-hawk-362
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1752520803674
+status: 3
+tags: []
+user_id: PC

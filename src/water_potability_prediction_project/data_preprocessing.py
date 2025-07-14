@@ -23,8 +23,9 @@ def fill_missing_values_median(df):
     try:
         for column in df.columns:
             if df[column].isna().any():
-                mean = df[column].mean()
-                df[column].fillna(mean, inplace=True)
+                mean = df[column].median()
+                df[column] = df[column].fillna(mean)
+
         return df
     except Exception as e:
         raise RuntimeError(f"Error while filling missing values: {e}")
@@ -69,10 +70,10 @@ def main():
         save_csv(train_processed, os.path.join(preprocessed_data_path, 'train_processed.csv'))
         save_csv(test_processed, os.path.join(preprocessed_data_path, 'test_processed.csv'))
 
-        print("✅ Data preprocessing completed successfully.")
+        print("Data preprocessing completed successfully.")
 
     except Exception as e:
-        print(f"❌ Error in preprocessing pipeline: {e}")
+        print(f"Error in preprocessing pipeline: {e}")
 
 
 if __name__ == "__main__":

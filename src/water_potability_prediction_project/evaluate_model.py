@@ -4,6 +4,8 @@ import pickle
 import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+# import dvclive
+import mlflow
 
 
 def load_data(file_path):
@@ -59,7 +61,15 @@ def save_metrics(metrics, output_path):
             json.dump(metrics, f, indent=4)
     except Exception as e:
         raise RuntimeError(f"Failed to save metrics to {output_path}: {e}")
-
+# def logging_metrics(metrics):
+#     """Log metrics using DVC Live."""
+#     try:
+#         with dvclive.Live() as live:
+#             for key, value in metrics.items():
+#                 live.log_metric(key, value)
+#             live.next_step()
+#     except Exception as e:
+#         raise RuntimeError(f"Failed to log metrics: {e}")
 
 def main():
     try:
@@ -74,11 +84,16 @@ def main():
         metrics = evaluate_model(model, X_test, y_test)
         save_metrics(metrics, metrics_path)
 
-        print("✅ Evaluation completed successfully.")
-        print(json.dumps(metrics, indent=4))
+        # Log metrics using MLflow
+        with mlflow.start_run():
+            for key, value in metrics.items():
+                mlflow.log_metric(key, value)
 
+        print("Evaluation completed successfully.")
+        print(json.dumps(metrics, indent=4))
     except Exception as e:
-        print(f"❌ Error in evaluation pipeline: {e}")
+        print(f"Error in evaluation pipeline: {e}")
+
 
 
 if __name__ == "__main__":

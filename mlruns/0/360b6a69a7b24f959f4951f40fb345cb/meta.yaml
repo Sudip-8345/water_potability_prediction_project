@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/0/360b6a69a7b24f959f4951f40fb345cb/artifacts
+end_time: 1752519311074
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 360b6a69a7b24f959f4951f40fb345cb
+run_name: fortunate-frog-650
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1752519310786
+status: 3
+tags: []
+user_id: PC

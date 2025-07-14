@@ -5,15 +5,15 @@ stages:
     deps:
     - path: src\water_potability_prediction_project\data_collection.py
       hash: md5
-      md5: 1eb76e62f6c9e5c51e6a8e0a9bc04b29
-      size: 1927
+      md5: c5a09c51078ca129f9c1bf42bf3707da
+      size: 1873
     params:
       params.yaml:
-        data_collection.test_size: 0.2
+        data_collection.test_size: 0.3
     outs:
     - path: data/raw
       hash: md5
-      md5: c0c2d65c14a603e91e029fda3c344a5c.dir
+      md5: 97825bb768b4b66d70c59daed663063a.dir
       size: 522262
       nfiles: 2
   data_preprocessing:
@@ -21,53 +21,53 @@ stages:
     deps:
     - path: data/raw
       hash: md5
-      md5: c0c2d65c14a603e91e029fda3c344a5c.dir
+      md5: 97825bb768b4b66d70c59daed663063a.dir
       size: 522262
       nfiles: 2
     - path: src\water_potability_prediction_project\data_preprocessing.py
       hash: md5
-      md5: 683e5e1aea6fc68d811b1d912193e335
-      size: 2513
+      md5: fed6fa9f28fe19a54f396a1cae7503fe
+      size: 2508
     outs:
     - path: data/preprocessed
       hash: md5
-      md5: e34c84b2d0f2a75442271cd6c5779b7c.dir
-      size: 546895
+      md5: a92b8581128eb8dd5d16a84af7ae83c1.dir
+      size: 546215
       nfiles: 2
   model_building:
     cmd: python src\water_potability_prediction_project\model_building.py
     deps:
     - path: data/preprocessed
       hash: md5
-      md5: e34c84b2d0f2a75442271cd6c5779b7c.dir
-      size: 546895
+      md5: a92b8581128eb8dd5d16a84af7ae83c1.dir
+      size: 546215
       nfiles: 2
     - path: src\water_potability_prediction_project\model_building.py
       hash: md5
-      md5: ecfd3fb173b5de7f15e7aa1b4196e28f
-      size: 2184
+      md5: 29c63a99101d892768fb7047cee25b8b
+      size: 2988
     params:
       params.yaml:
-        model_building.max_depth: 5
-        model_building.n_estimators: 150
+        model_building.max_depth: 7
+        model_building.n_estimators: 500
     outs:
     - path: model.pkl
       hash: md5
-      md5: de1dc3514b9ee52cc88446539978aebf
-      size: 597223
+      md5: d753c2f5eaba86fc4fac62ab2cfd004d
+      size: 4896909
   evaluate_model:
     cmd: python src\water_potability_prediction_project\evaluate_model.py
     deps:
     - path: model.pkl
       hash: md5
-      md5: de1dc3514b9ee52cc88446539978aebf
-      size: 597223
+      md5: d753c2f5eaba86fc4fac62ab2cfd004d
+      size: 4896909
     - path: src\water_potability_prediction_project\evaluate_model.py
       hash: md5
-      md5: e55a6bc3bb7ae6c2959e1ab9b8b19b40
-      size: 2769
+      md5: 4538a7c37d3f17a53669db8bdc9bba8a
+      size: 3305
     outs:
     - path: metrics.json
       hash: md5
-      md5: 5441fed55edb43e2b3b42d23ac320521
-      size: 152
+      md5: 23303e5130d9dc1c00fd9eff6eaaa927
+      size: 151

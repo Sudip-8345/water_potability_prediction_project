@@ -2,8 +2,10 @@ import pandas as pd
 import numpy as np
 import yaml
 import pickle
-from sklearn.ensemble import RandomForestClassifier
-
+# from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier
+# import dvclive
+import mlflow
 
 def load_params(params_path: str) -> dict:
     try:
@@ -30,24 +32,38 @@ def prepare_data(data: pd.DataFrame) -> tuple[np.ndarray, np.ndarray]:
         raise Exception(f"Error preparing data: {e}")
 
 
-def train_model(X_train: np.ndarray, y_train: np.ndarray, params: dict) -> RandomForestClassifier:
+def train_model(X_train: np.ndarray, y_train: np.ndarray, params: dict) -> GradientBoostingClassifier:
     try:
-        n_estimators = params.get('n_estimators', 100)
-        max_depth = params.get('max_depth', None)
-        clf = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth)
-        clf.fit(X_train, y_train)
-        return clf
+        mlflow.set_tracking_uri("http://localhost:5000")
+        mlflow.set_experiment("water_potability_prediction_using_GB")
+        with mlflow.start_run():
+            n_estimators = params.get('n_estimators', 100)
+            max_depth = params.get('max_depth', None)
+            clf = GradientBoostingClassifier(n_estimators=n_estimators, max_depth=max_depth)
+            clf.fit(X_train, y_train)
+            mlflow.log_params({'n_estimators': n_estimators, 'max_depth': max_depth})
+            mlflow.sklearn.log_model(clf, "model")
+            return clf
     except Exception as e:
         raise Exception(f"Error training model: {e}")
 
 
-def save_model(model: RandomForestClassifier, file_path: str) -> None:
+def save_model(model: GradientBoostingClassifier, file_path: str) -> None:
     try:
         with open(file_path, 'wb') as f:
             pickle.dump(model, f)
     except Exception as e:
         raise Exception(f"Error saving model to {file_path}: {e}")
 
+# def logging_parameters(params):
+#     """Log parameters using DVC Live."""
+#     try:
+#         with dvclive.Live() as live:
+#             for key, value in params.items():
+#                 live.log_param(key, value)
+#             live.next_step()
+#     except Exception as e:
+#         raise RuntimeError(f"Failed to log parameters: {e}")
 
 def main():
     try:
@@ -60,10 +76,10 @@ def main():
         X_train, y_train = prepare_data(data)
         model = train_model(X_train, y_train, params)
         save_model(model, model_save_path)
-
-        print("✅ Model trained and saved successfully.")
+        # logging_parameters(params)
+        print("Model trained and saved successfully.")
     except Exception as e:
-        print(f"❌ Error occurred: {e}")
+        print(f"Error occurred: {e}")
 
 
 if __name__ == '__main__':

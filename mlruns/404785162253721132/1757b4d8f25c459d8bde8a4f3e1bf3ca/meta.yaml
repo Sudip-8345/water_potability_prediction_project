@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/404785162253721132/1757b4d8f25c459d8bde8a4f3e1bf3ca/artifacts
+end_time: 1752519299409
+entry_point_name: ''
+experiment_id: '404785162253721132'
+lifecycle_stage: active
+run_id: 1757b4d8f25c459d8bde8a4f3e1bf3ca
+run_name: wistful-ox-898
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1752519285891
+status: 3
+tags: []
+user_id: PC
