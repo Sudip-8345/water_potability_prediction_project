@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/0/0633ddeeb29d47569bdd3bab349df76e/artifacts
+end_time: 1752521774376
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 0633ddeeb29d47569bdd3bab349df76e
+run_name: useful-hound-849
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1752521774232
+status: 3
+tags: []
+user_id: PC

@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/847371219181088471/cb079b5daa97480d822ecada8e781bdc/artifacts
+end_time: 1752521758868
+entry_point_name: ''
+experiment_id: '847371219181088471'
+lifecycle_stage: active
+run_id: cb079b5daa97480d822ecada8e781bdc
+run_name: vaunted-shoat-333
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1752521743173
+status: 3
+tags: []
+user_id: PC

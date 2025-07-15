@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/913646583006097373/e5e54796244a4828b67469dc76f2a667/artifacts
+end_time: 1752522031042
+entry_point_name: ''
+experiment_id: '913646583006097373'
+lifecycle_stage: active
+run_id: e5e54796244a4828b67469dc76f2a667
+run_name: delicate-finch-143
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1752522030680
+status: 3
+tags: []
+user_id: PC

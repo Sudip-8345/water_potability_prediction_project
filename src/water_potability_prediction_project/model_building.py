@@ -6,6 +6,9 @@ import pickle
 from sklearn.ensemble import GradientBoostingClassifier
 # import dvclive
 import mlflow
+import dagshub
+
+dagshub.init(repo_owner='Sudip-8345', repo_name='water_potability_prediction_project', mlflow=True)
 
 def load_params(params_path: str) -> dict:
     try:
@@ -34,7 +37,7 @@ def prepare_data(data: pd.DataFrame) -> tuple[np.ndarray, np.ndarray]:
 
 def train_model(X_train: np.ndarray, y_train: np.ndarray, params: dict) -> GradientBoostingClassifier:
     try:
-        mlflow.set_tracking_uri("http://localhost:5000")
+        mlflow.set_tracking_uri("https://dagshub.com/Sudip-8345/water_potability_prediction_project.mlflow")
         mlflow.set_experiment("water_potability_prediction_using_GB")
         with mlflow.start_run():
             n_estimators = params.get('n_estimators', 100)
@@ -42,7 +45,10 @@ def train_model(X_train: np.ndarray, y_train: np.ndarray, params: dict) -> Gradi
             clf = GradientBoostingClassifier(n_estimators=n_estimators, max_depth=max_depth)
             clf.fit(X_train, y_train)
             mlflow.log_params({'n_estimators': n_estimators, 'max_depth': max_depth})
-            mlflow.sklearn.log_model(clf, "model")
+            import joblib
+            joblib.dump(clf, "model.pkl")
+            mlflow.log_artifact("model.pkl")
+
             return clf
     except Exception as e:
         raise Exception(f"Error training model: {e}")

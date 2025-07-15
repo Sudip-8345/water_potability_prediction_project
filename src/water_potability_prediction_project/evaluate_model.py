@@ -6,7 +6,12 @@ import pandas as pd
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 # import dvclive
 import mlflow
+import dagshub
+from sklearn.metrics import confusion_matrix, classification_report
+import matplotlib.pyplot as plt
+import seaborn as sns
 
+dagshub.init(repo_owner='Sudip-8345', repo_name='water_potability_prediction_project', mlflow=True)
 
 def load_data(file_path):
     """Load the test data from CSV file."""
@@ -49,6 +54,20 @@ def evaluate_model(model, X_test, y_test):
             'recall': recall_score(y_test, y_pred, zero_division=0),
             'f1-score': f1_score(y_test, y_pred, zero_division=0)
         }
+        # Log confusion matrix and classification report
+        cm = confusion_matrix(y_test, y_pred)
+        cr = classification_report(y_test, y_pred, output_dict=True)
+        print("Confusion Matrix:\n", cm)
+        print("Classification Report:\n", cr)
+        # Save confusion matrix as a heatmap
+        plt.figure(figsize=(8, 6))
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+                    xticklabels=np.unique(y_test), yticklabels=np.unique(y_test))
+        plt.title('Confusion Matrix')
+        plt.xlabel('Predicted')
+        plt.ylabel('Actual')
+        plt.savefig('confusion_matrix.png')
+        mlflow.log_artifact('confusion_matrix.png')
         return metrics
     except Exception as e:
         raise RuntimeError(f"Model evaluation failed: {e}")
@@ -73,26 +92,38 @@ def save_metrics(metrics, output_path):
 
 def main():
     try:
+        # Set MLflow tracking server
+        mlflow.set_tracking_uri("https://dagshub.com/Sudip-8345/water_potability_prediction_project.mlflow")
+        mlflow.set_experiment("water_potability_evaluation")
+
         # Define paths
         data_path = 'data/preprocessed/test_processed.csv'
         model_path = 'model.pkl'
         metrics_path = 'metrics.json'
 
-        # Pipeline steps
-        X_test, y_test = load_data(data_path)
-        model = load_model(model_path)
-        metrics = evaluate_model(model, X_test, y_test)
-        save_metrics(metrics, metrics_path)
-
-        # Log metrics using MLflow
+        # Start MLflow run BEFORE evaluation
         with mlflow.start_run():
+            # Load data and model
+            X_test, y_test = load_data(data_path)
+            model = load_model(model_path)
+
+            # Evaluate model and log artifact
+            metrics = evaluate_model(model, X_test, y_test)
+
+            # Save metrics to file
+            save_metrics(metrics, metrics_path)
+            mlflow.log_artifact(metrics_path)  # Optional: log JSON file
+
+            # Log metrics
             for key, value in metrics.items():
                 mlflow.log_metric(key, value)
 
         print("Evaluation completed successfully.")
         print(json.dumps(metrics, indent=4))
+
     except Exception as e:
         print(f"Error in evaluation pipeline: {e}")
+
 
 
 
