@@ -68,6 +68,7 @@ def evaluate_model(model, X_test, y_test):
         plt.ylabel('Actual')
         plt.savefig('confusion_matrix.png')
         mlflow.log_artifact('confusion_matrix.png')
+        
         return metrics
     except Exception as e:
         raise RuntimeError(f"Model evaluation failed: {e}")
@@ -117,6 +118,9 @@ def main():
             # Log metrics
             for key, value in metrics.items():
                 mlflow.log_metric(key, value)
+            
+            mlflow.set_tag("model_version", "v1.0")
+            mlflow.log_artifact(__file__)
 
         print("Evaluation completed successfully.")
         print(json.dumps(metrics, indent=4))

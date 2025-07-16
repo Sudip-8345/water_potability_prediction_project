@@ -4,6 +4,7 @@ import yaml
 import pickle
 # from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.model_selection import RandomizedSearchCV
 # import dvclive
 import mlflow
 import dagshub
@@ -39,17 +40,31 @@ def train_model(X_train: np.ndarray, y_train: np.ndarray, params: dict) -> Gradi
     try:
         mlflow.set_tracking_uri("https://dagshub.com/Sudip-8345/water_potability_prediction_project.mlflow")
         mlflow.set_experiment("water_potability_prediction_using_GB")
+        mlflow.autolog()
         with mlflow.start_run():
-            n_estimators = params.get('n_estimators', 100)
-            max_depth = params.get('max_depth', None)
-            clf = GradientBoostingClassifier(n_estimators=n_estimators, max_depth=max_depth)
-            clf.fit(X_train, y_train)
-            mlflow.log_params({'n_estimators': n_estimators, 'max_depth': max_depth})
-            import joblib
-            joblib.dump(clf, "model.pkl")
-            mlflow.log_artifact("model.pkl")
+            random_search_params = {
+           'n_estimators': params.get('n_estimators', [100]),
+           'max_depth': params.get('max_depth', [None]),
+           'min_samples_split': params.get('min_samples_split', [2]),
+           'min_samples_leaf': params.get('min_samples_leaf', [1])
+            }
 
-            return clf
+            random_search = RandomizedSearchCV(
+                GradientBoostingClassifier(),
+                param_distributions=random_search_params,
+                n_iter=10,
+                cv=3,
+                verbose=1,
+                random_state=42,
+                n_jobs=-1
+            )
+            random_search.fit(X_train, y_train)
+            # mlflow.log_params({'n_estimators': n_estimators, 'max_depth': max_depth})
+            # import joblib
+            # joblib.dump(random_search, "model.pkl")
+            # mlflow.log_artifact("model.pkl")
+
+            return random_search
     except Exception as e:
         raise Exception(f"Error training model: {e}")
 
@@ -81,7 +96,9 @@ def main():
         data = load_data(data_path)
         X_train, y_train = prepare_data(data)
         model = train_model(X_train, y_train, params)
-        save_model(model, model_save_path)
+        print(f"Best parameters: {model.best_params_}")
+        print(f"Best score: {model.best_score_}")
+        save_model(model.best_estimator_, model_save_path)
         # logging_parameters(params)
         print("Model trained and saved successfully.")
     except Exception as e:
